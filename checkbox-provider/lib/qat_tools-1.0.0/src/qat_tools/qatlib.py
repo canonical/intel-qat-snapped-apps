@@ -298,7 +298,14 @@ class QatDevManager:
       for pci_desc in pci_ids:
         pci_id = pci_desc.split(' ')[0]
         if (filter_devs is None) or (pci_id in filter_devs):
-          _devs.append(Qat4xxxDevice(device_id, pci_id))
+          try:
+            _devs.append(Qat4xxxDevice(device_id, pci_id))
+          except FileNotFoundError as e:
+            # in some cases, the QAT device might not be available in the sysfs and debugfs
+            # for example, it has been passthrough in a VM, we do not want to crash
+            pass
+          except Exception as e:
+            print(f'Exception occured to instanciate QAT device : {e}')
       self.qat_devs.extend(_devs)
 
   def filter_counter(counter_name):
