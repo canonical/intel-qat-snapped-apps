@@ -298,7 +298,10 @@ class QatDevManager:
       for pci_desc in pci_ids:
         pci_id = pci_desc.split(' ')[0]
         if (filter_devs is None) or (pci_id in filter_devs):
-          _devs.append(Qat4xxxDevice(device_id, pci_id))
+          try:
+            _devs.append(Qat4xxxDevice(device_id, pci_id))
+          except:
+            pass
       self.qat_devs.extend(_devs)
 
   def filter_counter(counter_name):
